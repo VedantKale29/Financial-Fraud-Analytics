@@ -1,9 +1,40 @@
-columns:
-  transaction_id: int
-  customer_id: int
-  account_id: int
-  amount: float
-  transaction_type: string
-  timestamp: string
-  branch_id: int
-  is_fraud: int
+dimensions:
+
+  dim_customers:
+    primary_key: customer_id
+    columns:
+      - customer_id
+      - name
+      - kyc_status
+      - risk_segment
+
+  dim_accounts:
+    primary_key: account_id
+    columns:
+      - account_id
+      - customer_id
+      - account_type
+      - balance_limit
+
+  dim_date:
+    primary_key: date_key
+    columns:
+      - date_key
+      - full_date
+      - day_of_week
+      - is_weekend
+
+
+facts:
+
+  fact_transactions:
+    primary_key: transaction_id
+    foreign_keys:
+      - customer_id
+      - account_id
+      - date_key
+
+    columns:
+      - transaction_id
+      - amount
+      - is_fraud

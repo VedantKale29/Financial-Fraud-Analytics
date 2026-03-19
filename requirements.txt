@@ -12,5 +12,6 @@ loguru
 boto3
 pyspark
 snowflake-connector-python
-
+great-expectations
+pyarrow
 -e .

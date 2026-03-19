@@ -22,8 +22,29 @@ list_of_files = [
     # ================= DATA =================
 
     "data/raw/.gitkeep",
-    "data/processed/.gitkeep",
+
+    "data/processed/bronze/.gitkeep",
+    "data/processed/silver/.gitkeep",
+    "data/processed/gold/.gitkeep",
+
     "data/warehouse/.gitkeep",
+
+    # ================= ARTIFACTS =================
+
+    "artifacts/.gitkeep",
+    "artifacts/ingestion/.gitkeep",
+    "artifacts/transformation/.gitkeep",
+    "artifacts/loading/.gitkeep",
+
+    # ================= SQL =================
+
+    "sql/warehouse_setup.sql",
+    "sql/aml_queries.sql",
+
+    # ================= REPORTS =================
+
+    "reports/dashboard_wireframe.pdf",
+    "reports/powerbi.pbix",
 
     # ================= LOGS =================
 
@@ -47,39 +68,47 @@ list_of_files = [
 
     f"src/{project_name}/__init__.py",
 
-    # ----- components -----
+    # ---------- components ----------
+
     f"src/{project_name}/components/__init__.py",
     f"src/{project_name}/components/extraction.py",
     f"src/{project_name}/components/transformation.py",
     f"src/{project_name}/components/loading.py",
 
-    # ----- config -----
+    # ---------- config ----------
+
     f"src/{project_name}/config/__init__.py",
     f"src/{project_name}/config/configuration.py",
 
-    # ----- constants -----
+    # ---------- constants ----------
+
     f"src/{project_name}/constants/__init__.py",
     f"src/{project_name}/constants/constants.py",
 
-    # ----- entity -----
+    # ---------- entity ----------
+
     f"src/{project_name}/entity/__init__.py",
     f"src/{project_name}/entity/config_entity.py",
     f"src/{project_name}/entity/artifact_entity.py",
 
-    # ----- exception -----
+    # ---------- exception ----------
+
     f"src/{project_name}/exception/__init__.py",
     f"src/{project_name}/exception/exception.py",
 
-    # ----- logger -----
+    # ---------- logger ----------
+
     f"src/{project_name}/logger/__init__.py",
     f"src/{project_name}/logger/logging.py",
 
-    # ----- pipelines -----
+    # ---------- pipelines ----------
+
     f"src/{project_name}/pipelines/__init__.py",
     f"src/{project_name}/pipelines/training_pipeline.py",
     f"src/{project_name}/pipelines/prediction_pipeline.py",
 
-    # ----- utils -----
+    # ---------- utils ----------
+
     f"src/{project_name}/utils/__init__.py",
     f"src/{project_name}/utils/utils.py",
 ]
@@ -99,4 +128,4 @@ for filepath in list_of_files:
             pass
 
 
-print("✅ Project structure created successfully")
+print("✅ Enterprise Project Structure Created")
