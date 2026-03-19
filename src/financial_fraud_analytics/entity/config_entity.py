@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 @dataclass
-class IngestionConfig:
+class DataIngestionConfig:
 
     raw_data_path: Path
     bronze_path: Path
