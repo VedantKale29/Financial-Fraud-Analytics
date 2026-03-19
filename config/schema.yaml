@@ -1,0 +1,9 @@
+columns:
+  transaction_id: int
+  customer_id: int
+  account_id: int
+  amount: float
+  transaction_type: string
+  timestamp: string
+  branch_id: int
+  is_fraud: int

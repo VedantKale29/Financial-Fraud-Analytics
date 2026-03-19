@@ -1,0 +1,14 @@
+data_path: data/raw/transactions.csv
+
+database:
+  host: localhost
+  port: 5432
+  db: banking
+  user: postgres
+  password: root
+
+paths:
+  raw: data/raw
+  bronze: data/bronze
+  silver: data/silver
+  gold: data/gold

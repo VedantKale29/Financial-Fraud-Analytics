@@ -1,0 +1,16 @@
+pandas
+numpy
+pyyaml
+sqlalchemy
+psycopg2-binary
+matplotlib
+seaborn
+scikit-learn
+jupyter
+python-dotenv
+loguru
+boto3
+pyspark
+snowflake-connector-python
+
+-e .
