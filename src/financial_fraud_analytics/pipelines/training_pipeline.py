@@ -14,16 +14,32 @@ class TrainingPipeline:
 
     def run(self):
 
+        # =============================
+        # INGESTION
+        # =============================
+
         ingestion_config = self.config_manager.get_data_ingestion_config()
 
         extractor = DataExtraction(ingestion_config)
 
         raw_file = extractor.extract()
 
+
+        # =============================
+        # TRANSFORMATION
+        # =============================
+
         transformer = DataTransformation(ingestion_config)
 
         bronze_file = transformer.transform(raw_file)
 
-        loader = DataLoading(self.config_manager.get_config())
+
+        # =============================
+        # LOADING
+        # =============================
+
+        config = self.config_manager.get_config()
+
+        loader = DataLoading(config)
 
         loader.load(bronze_file)

@@ -41,3 +41,7 @@ class ConfigurationManager:
             bronze_path=Path(paths['bronze']),
             source_file=self.config['data_path'],
         )
+    
+    def get_config(self):
+
+        return self.config

@@ -22,20 +22,55 @@ class DataTransformation:
 
             df = pd.read_csv(input_file)
 
-            df = df.dropna()
+            # ===============================
+            # rename columns
+            # ===============================
 
-            bronze_file = self.config.bronze_path / "bronze.csv"
+            df = df.rename(
+                columns={
+                    "Amount": "amount",
+                    "Class": "is_fraud",
+                    "Time": "date_key",
+                }
+            )
 
-            df.to_csv(bronze_file, index=False)
+            # ===============================
+            # create required columns
+            # ===============================
 
-            logger.info("Transformation done")
+            df["transaction_id"] = df.index
 
-            return bronze_file
+            df["customer_id"] = 1
+
+            df["account_id"] = 1
+
+            # ===============================
+            # reorder columns
+            # ===============================
+
+            df = df[
+                [
+                    "transaction_id",
+                    "customer_id",
+                    "account_id",
+                    "date_key",
+                    "amount",
+                    "is_fraud",
+                ]
+            ]
+
+            output_file = self.config.bronze_path / "transactions_clean.csv"
+
+            df.to_csv(output_file, index=False)
+
+            logger.info("Transformation finished")
+
+            return output_file
 
         except Exception as e:
 
             raise DataPlatformException(
                 "Transformation failed",
                 "TRANSFORMATION",
-                sys
+                sys,
             )

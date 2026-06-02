@@ -5,8 +5,9 @@ from pathlib import Path
 @dataclass
 class DataIngestionConfig:
 
-    raw_data_path: Path
+    raw_path: Path
     bronze_path: Path
+    source_file: str
 
 
 @dataclass
