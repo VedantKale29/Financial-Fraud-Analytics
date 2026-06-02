@@ -14,6 +14,18 @@ paths:
   gold: data/processed/gold
   warehouse: data/warehouse
 
+bronze:
+  format: parquet
+  compression: snappy
+  partition_cols:
+    - dt
+
+silver:
+  format: parquet
+  compression: snappy
+  partition_cols:
+    - dt
+
 loading:
   table: fact_transactions
   if_exists: replace

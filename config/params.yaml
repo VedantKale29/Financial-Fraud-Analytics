@@ -1,0 +1,17 @@
+silver:
+  # business key used for deduplication
+  dedup_keys:
+    - transaction_id
+
+  # columns that must never be null (records violating this are dropped)
+  not_null_columns:
+    - transaction_id
+    - amount
+    - is_fraud
+
+  # validity rule: amount must be >= this value
+  min_amount: 0
+
+  # late-arrival watermark: reject events whose partition date (dt) is more than
+  # this many days older than the latest dt seen in the batch
+  watermark_days: 2

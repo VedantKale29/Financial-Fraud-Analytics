@@ -1,40 +1,22 @@
 dimensions:
-
   dim_customers:
     primary_key: customer_id
-    columns:
-      - customer_id
-      - name
-      - kyc_status
-      - risk_segment
-
-  dim_accounts:
-    primary_key: account_id
-    columns:
-      - account_id
-      - customer_id
-      - account_type
-      - balance_limit
-
-  dim_date:
-    primary_key: date_key
-    columns:
-      - date_key
-      - full_date
-      - day_of_week
-      - is_weekend
-
+    columns: [customer_id, name, kyc_status, risk_segment]
 
 facts:
-
   fact_transactions:
     primary_key: transaction_id
-    foreign_keys:
-      - customer_id
-      - account_id
-      - date_key
+    foreign_keys: [customer_id, account_id, date_key]
+    columns: [transaction_id, amount, is_fraud]
 
+# Silver data contract: enforced column types
+silver:
+  transactions:
+    primary_key: transaction_id
     columns:
-      - transaction_id
-      - amount
-      - is_fraud
+      transaction_id: int64
+      customer_id: int64
+      account_id: int64
+      date_key: float64
+      amount: float64
+      is_fraud: int64

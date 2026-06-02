@@ -3,6 +3,7 @@ from pathlib import Path
 from financial_fraud_analytics.constants.constants import (
     CONFIG_FILE_PATH,
     SCHEMA_FILE_PATH,
+    PARAMS_FILE_PATH,
 )
 from financial_fraud_analytics.utils.utils import (
     read_yaml,
@@ -12,6 +13,8 @@ from financial_fraud_analytics.utils.utils import (
 from financial_fraud_analytics.entity.config_entity import (
     DataIngestionConfig,
     TransformationConfig,
+    BronzeConfig,
+    SilverConfig,
     LoadingConfig,
 )
 
@@ -21,6 +24,7 @@ class ConfigurationManager:
     def __init__(self):
         self.config = read_yaml(CONFIG_FILE_PATH)
         self.schema = read_yaml(SCHEMA_FILE_PATH)
+        self.params = read_yaml(PARAMS_FILE_PATH)
 
         create_directories([
             self.config['paths']['raw'],
@@ -42,6 +46,32 @@ class ConfigurationManager:
         return TransformationConfig(
             raw_path=Path(paths['raw']),
             bronze_path=Path(paths['bronze']),
+        )
+
+    def get_bronze_config(self) -> BronzeConfig:
+        bronze = self.config['bronze']
+        return BronzeConfig(
+            bronze_path=Path(self.config['paths']['bronze']),
+            file_format=bronze['format'],
+            compression=bronze['compression'],
+            partition_cols=bronze['partition_cols'],
+        )
+
+    def get_silver_config(self) -> SilverConfig:
+        silver = self.config['silver']
+        p = self.params['silver']
+        contract = self.schema['silver']['transactions']
+        return SilverConfig(
+            bronze_path=Path(self.config['paths']['bronze']),
+            silver_path=Path(self.config['paths']['silver']),
+            compression=silver['compression'],
+            partition_cols=silver['partition_cols'],
+            schema=contract['columns'],
+            primary_key=contract['primary_key'],
+            dedup_keys=p['dedup_keys'],
+            not_null_columns=p['not_null_columns'],
+            min_amount=p['min_amount'],
+            watermark_days=p['watermark_days'],
         )
 
     def get_loading_config(self) -> LoadingConfig:
