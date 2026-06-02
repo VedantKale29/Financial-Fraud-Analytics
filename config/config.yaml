@@ -9,7 +9,11 @@ database:
 
 paths:
   raw: data/raw
-  bronze: data/bronze
-  silver: data/silver
-  gold: data/gold
+  bronze: data/processed/bronze
+  silver: data/processed/silver
+  gold: data/processed/gold
   warehouse: data/warehouse
+
+loading:
+  table: fact_transactions
+  if_exists: replace

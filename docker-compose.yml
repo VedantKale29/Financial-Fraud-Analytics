@@ -1,0 +1,38 @@
+# Postgres warehouse for Financial Fraud Analytics
+# Matches config/config.yaml: host localhost | port 5432 | db banking | user postgres | password root
+# Start:  docker compose up -d
+# Stop:   docker compose down         (keeps data)
+# Reset:  docker compose down -v      (wipes data volume)
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: ffa_postgres
+    environment:
+      POSTGRES_DB: banking
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - ffa_pgdata:/var/lib/postgresql/data
+      # auto-creates dim/fact tables on FIRST boot only (empty volume):
+      - ./sql/warehouse_setup.sql:/docker-entrypoint-initdb.d/01_warehouse_setup.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d banking"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # optional lightweight web UI at http://localhost:8080
+  adminer:
+    image: adminer:4
+    container_name: ffa_adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  ffa_pgdata:
