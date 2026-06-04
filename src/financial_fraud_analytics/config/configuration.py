@@ -13,6 +13,7 @@ from financial_fraud_analytics.utils.utils import (
 from financial_fraud_analytics.entity.config_entity import (
     DataIngestionConfig,
     TransformationConfig,
+    SparkConfig,
     BronzeConfig,
     SilverConfig,
     LoadingConfig,
@@ -46,6 +47,15 @@ class ConfigurationManager:
         return TransformationConfig(
             raw_path=Path(paths['raw']),
             bronze_path=Path(paths['bronze']),
+        )
+
+    def get_spark_config(self) -> SparkConfig:
+        s = self.config['spark']
+        return SparkConfig(
+            app_name=s['app_name'],
+            master=s['master'],
+            shuffle_partitions=s['shuffle_partitions'],
+            output_files_per_partition=s['output_files_per_partition'],
         )
 
     def get_bronze_config(self) -> BronzeConfig:

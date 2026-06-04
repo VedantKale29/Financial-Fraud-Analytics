@@ -16,6 +16,14 @@ class TransformationConfig:
 
 
 @dataclass(frozen=True)
+class SparkConfig:
+    app_name: str
+    master: str
+    shuffle_partitions: int
+    output_files_per_partition: int
+
+
+@dataclass(frozen=True)
 class BronzeConfig:
     bronze_path: Path
     file_format: str
@@ -29,10 +37,8 @@ class SilverConfig:
     silver_path: Path
     compression: str
     partition_cols: List[str]
-    # data contract: column -> expected dtype
     schema: Dict[str, str]
     primary_key: str
-    # tunables (from params.yaml)
     dedup_keys: List[str]
     not_null_columns: List[str]
     min_amount: float

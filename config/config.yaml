@@ -14,6 +14,15 @@ paths:
   gold: data/processed/gold
   warehouse: data/warehouse
 
+# which engine the lake stages use: pandas | spark
+engine: spark
+
+spark:
+  app_name: financial_fraud_analytics
+  master: local[*]
+  shuffle_partitions: 4
+  output_files_per_partition: 1
+
 bronze:
   format: parquet
   compression: snappy
