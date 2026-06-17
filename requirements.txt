@@ -16,4 +16,5 @@ great-expectations
 pyarrow
 ensure
 pytest
+confluent-kafka
 -e .

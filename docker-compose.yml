@@ -1,8 +1,7 @@
-# Postgres warehouse for Financial Fraud Analytics
-# Matches config/config.yaml: host localhost | port 5432 | db banking | user postgres | password root
+# Financial Fraud Analytics — local infra: Postgres warehouse + Kafka broker.
 # Start:  docker compose up -d
-# Stop:   docker compose down         (keeps data)
-# Reset:  docker compose down -v      (wipes data volume)
+# Stop:   docker compose down        (keeps data)
+# Reset:  docker compose down -v      (wipes volumes)
 
 services:
   postgres:
@@ -16,7 +15,6 @@ services:
       - "5432:5432"
     volumes:
       - ffa_pgdata:/var/lib/postgresql/data
-      # auto-creates dim/fact tables on FIRST boot only (empty volume):
       - ./sql/warehouse_setup.sql:/docker-entrypoint-initdb.d/01_warehouse_setup.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d banking"]
@@ -24,15 +22,36 @@ services:
       timeout: 3s
       retries: 5
 
-  # optional lightweight web UI at http://localhost:8080
-  adminer:
-    image: adminer:4
-    container_name: ffa_adminer
+  # single-node Kafka in KRaft mode (no ZooKeeper)
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: ffa_kafka
     ports:
-      - "8080:8080"
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  # optional web UI at http://localhost:8081
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: ffa_kafka_ui
+    ports:
+      - "8081:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     depends_on:
-      postgres:
-        condition: service_healthy
+      - kafka
 
 volumes:
   ffa_pgdata:

@@ -21,6 +21,7 @@ class SparkConfig:
     master: str
     shuffle_partitions: int
     output_files_per_partition: int
+    jars_packages: str = ""
 
 
 @dataclass(frozen=True)
@@ -51,3 +52,45 @@ class LoadingConfig:
     db_uri: str
     table_name: str
     if_exists: str
+
+
+@dataclass(frozen=True)
+class KafkaConfig:
+    bootstrap_servers: str
+    topic: str
+    client_id: str
+    starting_offsets: str
+    throttle_ms: int
+
+
+@dataclass(frozen=True)
+class StreamingConfig:
+    output_path: Path
+    checkpoint_path: Path
+    compression: str
+    partition_cols: List[str]
+    trigger_seconds: int
+    max_offsets_per_trigger: int
+    schema: Dict[str, str]
+
+
+@dataclass(frozen=True)
+class EnrichmentConfig:
+    silver_path: Path
+    enriched_path: Path
+    compression: str
+    partition_cols: List[str]
+    base_date: str
+    num_customers: int
+    num_merchants: int
+    categories: List[str]
+    states: List[str]
+
+
+@dataclass(frozen=True)
+class GoldConfig:
+    enriched_path: Path
+    gold_path: Path
+    compression: str
+    top_n_merchants: int
+    high_risk_min_fraud: int

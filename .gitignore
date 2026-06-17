@@ -13,3 +13,107 @@ data/
 .ipynb_checkpoints
 
 .DS_Store
+
+# =====================================================================
+# Financial Fraud Analytics — .gitignore
+# Goal: never push secrets, state, data, or local/build cruft.
+# NOTE: .gitignore only prevents UNtracked files from being added.
+#       Already-committed files must be removed with `git rm --cached`
+#       (see the cleanup commands shared alongside this file).
+# =====================================================================
+
+# ---------- Secrets / credentials (NEVER commit) ----------
+.env
+.env.*
+*.env
+secrets.yaml
+secrets.yml
+*secret*
+*.pem
+*.key
+credentials
+aws_credentials
+.aws/
+# local-only config overrides (keep real passwords out of config.yaml)
+config/config.local.yaml
+config/*.local.yaml
+
+# ---------- Terraform (state can embed sensitive values) ----------
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+# terraform.tfvars holds YOUR email / inputs -> keep it private
+terraform.tfvars
+*.auto.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+# (commit .terraform.lock.hcl for reproducible provider versions — not ignored)
+
+# ---------- Data lake / datasets / outputs (large, regenerable) ----------
+data/
+!data/**/.gitkeep
+*.parquet
+*.csv
+# keep small sample/reference CSVs if you explicitly add them with -f
+
+# ---------- Spark / Hadoop local cruft ----------
+spark-warehouse/
+metastore_db/
+derby.log
+*.crc
+_SUCCESS
+data/checkpoints/
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.installed.cfg
+*.egg
+
+# ---------- Virtual environments ----------
+venv/
+.venv/
+env/
+ENV/
+
+# ---------- Test / lint / type caches ----------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ---------- Logs ----------
+logs/
+*.log
+
+# ---------- Notebooks ----------
+.ipynb_checkpoints/
+
+# ---------- IDE / editor ----------
+.vscode/
+.idea/
+*.iml
+*.swp
+*~
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---------- Docker volumes (if mapped locally) ----------
+ffa_pgdata/

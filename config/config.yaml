@@ -10,11 +10,12 @@ database:
 paths:
   raw: data/raw
   bronze: data/processed/bronze
+  bronze_stream: data/processed/bronze_stream
   silver: data/processed/silver
+  enriched: data/processed/enriched
   gold: data/processed/gold
   warehouse: data/warehouse
 
-# which engine the lake stages use: pandas | spark
 engine: spark
 
 spark:
@@ -22,6 +23,20 @@ spark:
   master: local[*]
   shuffle_partitions: 4
   output_files_per_partition: 1
+  # Kafka connector for structured streaming (pulled from Maven on first run)
+  jars_packages: org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1
+
+kafka:
+  bootstrap_servers: localhost:9092
+  topic: transactions
+  client_id: ffa-producer
+  starting_offsets: earliest
+  throttle_ms: 0          # delay between messages to simulate real-time (0 = max speed)
+
+streaming:
+  checkpoint_path: data/checkpoints/bronze_stream
+  trigger_seconds: 5
+  max_offsets_per_trigger: 10000
 
 bronze:
   format: parquet
@@ -34,6 +49,9 @@ silver:
   compression: snappy
   partition_cols:
     - dt
+
+gold:
+  compression: snappy
 
 loading:
   table: fact_transactions

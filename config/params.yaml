@@ -15,3 +15,17 @@ silver:
   # late-arrival watermark: reject events whose partition date (dt) is more than
   # this many days older than the latest dt seen in the batch
   watermark_days: 2
+
+# Synthetic dimension enrichment (Path A).
+# NOTE: merchant/category/state are DERIVED from transaction_id for demo purposes;
+# they carry no real analytical relationship to the (real) is_fraud label.
+enrichment:
+  base_date: "2024-01-01"     # date_key seconds are added to this to build event_time
+  num_customers: 100
+  num_merchants: 50
+  categories: [grocery, travel, electronics, dining, fuel, online, healthcare, entertainment]
+  states: [CA, NY, TX, FL, IL, WA, MA, GA, NJ, PA]
+
+gold:
+  top_n_merchants: 10
+  high_risk_min_fraud: 1      # a customer needs >= this many fraud txns to be "high risk"

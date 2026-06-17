@@ -14,8 +14,12 @@ from financial_fraud_analytics.entity.config_entity import (
     DataIngestionConfig,
     TransformationConfig,
     SparkConfig,
+    KafkaConfig,
+    StreamingConfig,
     BronzeConfig,
     SilverConfig,
+    EnrichmentConfig,
+    GoldConfig,
     LoadingConfig,
 )
 
@@ -56,6 +60,30 @@ class ConfigurationManager:
             master=s['master'],
             shuffle_partitions=s['shuffle_partitions'],
             output_files_per_partition=s['output_files_per_partition'],
+            jars_packages=s.get('jars_packages', ''),
+        )
+
+    def get_kafka_config(self) -> KafkaConfig:
+        k = self.config['kafka']
+        return KafkaConfig(
+            bootstrap_servers=k['bootstrap_servers'],
+            topic=k['topic'],
+            client_id=k['client_id'],
+            starting_offsets=k['starting_offsets'],
+            throttle_ms=k['throttle_ms'],
+        )
+
+    def get_streaming_config(self) -> StreamingConfig:
+        st = self.config['streaming']
+        contract = self.schema['silver']['transactions']
+        return StreamingConfig(
+            output_path=Path(self.config['paths']['bronze_stream']),
+            checkpoint_path=Path(st['checkpoint_path']),
+            compression=self.config['bronze']['compression'],
+            partition_cols=self.config['bronze']['partition_cols'],
+            trigger_seconds=st['trigger_seconds'],
+            max_offsets_per_trigger=st['max_offsets_per_trigger'],
+            schema=contract['columns'],
         )
 
     def get_bronze_config(self) -> BronzeConfig:
@@ -82,6 +110,30 @@ class ConfigurationManager:
             not_null_columns=p['not_null_columns'],
             min_amount=p['min_amount'],
             watermark_days=p['watermark_days'],
+        )
+
+    def get_enrichment_config(self) -> EnrichmentConfig:
+        e = self.params['enrichment']
+        return EnrichmentConfig(
+            silver_path=Path(self.config['paths']['silver']),
+            enriched_path=Path(self.config['paths']['enriched']),
+            compression=self.config['silver']['compression'],
+            partition_cols=self.config['silver']['partition_cols'],
+            base_date=e['base_date'],
+            num_customers=e['num_customers'],
+            num_merchants=e['num_merchants'],
+            categories=e['categories'],
+            states=e['states'],
+        )
+
+    def get_gold_config(self) -> GoldConfig:
+        g = self.params['gold']
+        return GoldConfig(
+            enriched_path=Path(self.config['paths']['enriched']),
+            gold_path=Path(self.config['paths']['gold']),
+            compression=self.config['gold']['compression'],
+            top_n_merchants=g['top_n_merchants'],
+            high_risk_min_fraud=g['high_risk_min_fraud'],
         )
 
     def get_loading_config(self) -> LoadingConfig:
